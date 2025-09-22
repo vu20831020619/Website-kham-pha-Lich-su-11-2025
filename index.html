@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám phá Lịch sử 11</title>
+    <!-- Thư viện Tailwind CSS để tạo giao diện nhanh chóng và đẹp mắt -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Phông chữ Inter từ Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Màu nền nhẹ nhàng */
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 24px;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section-content {
+            display: none;
+        }
+        .active-section {
+            display: block;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-button {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .nav-button:hover {
+            transform: scale(1.05);
+        }
+        .nav-button.active {
+            color: #1d4ed8; /* Màu xanh đậm cho nút active */
+            border-bottom: 2px solid #1d4ed8;
+        }
+        .chatbot-container {
+            background-color: #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chatbot-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 8px;
+        }
+        .chatbot-input {
+            margin-top: 16px;
+        }
+        .message-box {
+            max-width: 80%;
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 10px;
+        }
+        .user-message {
+            background-color: #a5b4fc;
+            color: #1e3a8a;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        .bot-message {
+            background-color: #cbd5e1;
+            color: #1f2937;
+            align-self: flex-start;
+            margin-right: auto;
+        }
+        /* Custom scrollbar for better look */
+        .chatbot-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chatbot-messages::-webkit-scrollbar-thumb {
+            background-color: #94a3b8;
+            border-radius: 4px;
+        }
+        .chatbot-messages::-webkit-scrollbar-track {
+            background-color: #e2e8f0;
+        }
+        .quiz-question-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .auth-container {
+            max-width: 400px;
+            margin: auto;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        /* New styles for event timeline */
+        .event-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .event-year-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            flex-shrink: 0;
+            margin-right: 1rem;
+            text-align: center;
+        }
+        .event-content {
+            flex-grow: 1;
+            border-left: 3px solid #e2e8f0;
+            padding-left: 1rem;
+        }
+        .event-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #2563eb;
+        }
+        .event-description {
+            font-size: 1rem;
+            color: #4b5563;
+        }
+        /* New styles for glossary terms */
+        .glossary-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .glossary-term-circle {
+            width: 120px;
+            min-height: 80px;
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #fff;
+            flex-shrink: 0;
+            margin-right: 1rem;
+            text-align: center;
+            word-wrap: break-word;
+        }
+        .glossary-definition-box {
+            flex-grow: 1;
+            background-color: #f3f4f6; /* gray-100 */
+            padding: 1rem;
+            border-radius: 12px;
+        }
+        .quiz-icon-container {
+            position: relative;
+            cursor: pointer;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background-color: #4f46e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+        }
+        .quiz-icon-container:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+        }
+        .quiz-icon {
+            color: white;
+            font-size: 70px;
+        }
+        .quiz-text {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            color: #4f46e5;
+        }
+        .quiz-number-circle {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: white;
+            color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .chapter-card-ch1 { background-color: #e0f2fe; }
+        .chapter-card-ch2 { background-color: #dcfce7; }
+        .chapter-card-ch3 { background-color: #fef9c3; }
+        .chapter-card-ch4 { background-color: #fee2e2; }
+        .chapter-card-ch5 { background-color: #f3e8ff; }
+        .chapter-card-ch6 { background-color: #fce7f3; }
+        .chapter-title-ch1 { color: #075985; }
+        .chapter-title-ch2 { color: #15803d; }
+        .chapter-title-ch3 { color: #a16207; }
+        .chapter-title-ch4 { color: #b91c1c; }
+        .chapter-title-ch5 { color: #7e22ce; }
+        .chapter-title-ch6 { color: #be185d; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Header & Navigation -->
+    <header class="bg-white sticky top-0 z-50 shadow-sm">
+        <div class="container flex items-center justify-between py-4">
+            <h1 class="text-3xl font-bold text-blue-700">Khám phá Lịch sử 11</h1>
+            <nav class="flex space-x-6">
+                <button class="nav-button active" onclick="showSection('home')">Trang chủ</button>
+                <button class="nav-button" onclick="showSection('knowledge')">Kiến thức</button>
+                <button class="nav-button" onclick="showSection('infographic')">Infographic</button>
+                <button class="nav-button" onclick="showSection('digital-resources')">Học liệu số</button>
+                <button class="nav-button" onclick="showSection('glossary')">Thuật ngữ</button>
+                <button class="nav-button" onclick="showSection('quiz')">Trắc nghiệm</button>
+                <button class="nav-button" onclick="showSection('game')">Trò chơi</button>
+                <button class="nav-button" onclick="showSection('events')">Sự kiện</button>
+                <button class="nav-button" onclick="showSection('announcements')">Thông báo</button>
+                <button class="nav-button" onclick="showSection('chatbot')">Hỏi đáp</button>
+                <button class="nav-button" onclick="showSection('contact')">Liên hệ</button>
+                <button id="auth-button" class="nav-button" onclick="showSection('auth')">Đăng nhập</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main content area -->
+    <main class="container">
+
+        <!-- Trang chủ -->
+        <div id="home" class="section-content active-section">
+            <div class="card text-center">
+                <h2 class="text-4xl font-extrabold text-gray-800 mb-4">Chào mừng đến với "Khám phá Lịch sử 11"</h2>
+                <p class="text-lg text-gray-600">Nơi bạn có thể khám phá, học hỏi và yêu thích môn Lịch sử!</p>
+                <div class="mt-8 flex justify-center space-x-4">
+                    <button class="bg-blue-600 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-blue-700 transition" onclick="showSection('knowledge')">Bắt đầu học ngay</button>
+                    <button class="bg-green-500 text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-green-600 transition" onclick="showSection('game')">Thử thách với trò chơi</button>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Kiến thức</h3>
+                    <p class="text-gray-600 mt-2">Nắm vững kiến thức chính theo từng bài, chủ đề với hệ thống bài học được sắp xếp khoa học.</p>
+                </div>
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Infographic</h3>
+                    <p class="text-gray-600 mt-2">Tóm tắt kiến thức một cách trực quan, dễ nhớ qua các bảng biểu infographic sinh động.</p>
+                </div>
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Trắc nghiệm</h3>
+                    <p class="text-gray-600 mt-2">Kiểm tra và củng cố kiến thức đã học với các bài tập trắc nghiệm đa dạng.</p>
+                </div>
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Trò chơi</h3>
+                    <p class="text-gray-600 mt-2">Học mà chơi, chơi mà học qua các trò chơi mô phỏng tương tác đầy thú vị.</p>
+                </div>
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Hỏi đáp</h3>
+                    <p class="text-gray-600 mt-2">Trao đổi và tìm hiểu thêm thông tin với chatbot AI, luôn sẵn sàng giải đáp mọi thắc mắc.</p>
+                </div>
+                <div class="card text-center hover:shadow-xl transition">
+                    <h3 class="text-2xl font-semibold text-blue-800">Sự kiện</h3>
+                    <p class="text-gray-600 mt-2">Cập nhật những sự kiện lịch sử nổi bật, các tin tức mới nhất từ giáo viên.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kiến thức chính theo từng bài -->
+        <div id="knowledge" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Kiến thức Chính theo Bài/Chủ đề</h2>
+            
+            <!-- Phần hiển thị danh sách các bài học -->
+            <div id="lesson-list-display">
+                <!-- Chương 1 -->
+                <div class="card chapter-card-ch1">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch1')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch1">Chương 1: Cách mạng tư sản và sự phát triển của Chủ nghĩa tư bản</h3>
+                        <svg id="arrow-ch1" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch1" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Một số vấn đề chung về cách mạng tư sản', 'Nội dung chi tiết của bài 1 sẽ được cập nhật sau.')">Bài 1: Một số vấn đề chung về cách mạng tư sản</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Sự xác lập và phát triển của chủ nghĩa tư bản', 'Nội dung chi tiết của bài 2 sẽ được cập nhật sau.')">Bài 2: Sự xác lập và phát triển của chủ nghĩa tư bản</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chương 2 -->
+                <div class="card chapter-card-ch2">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch2')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch2">Chương 2: Chủ nghĩa xã hội từ năm 1917 đến nay</h3>
+                        <svg id="arrow-ch2" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch2" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Liên bang Cộng hoà xã hội chủ nghĩa Xô viết ra đời và sự phát triển của chủ nghĩa xã hội sau Chiến tranh thế giới thứ hai', 'Nội dung chi tiết của bài 3 sẽ được cập nhật sau.')">Bài 3: Liên bang Cộng hoà xã hội chủ nghĩa Xô viết ra đời và sự phát triển của chủ nghĩa xã hội sau Chiến tranh thế giới thứ hai</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Chủ nghĩa xã hội từ năm 1991 đến nay', 'Nội dung chi tiết của bài 4 sẽ được cập nhật sau.')">Bài 4: Chủ nghĩa xã hội từ năm 1991 đến nay</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chương 3 -->
+                <div class="card chapter-card-ch3">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch3')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch3">Chương 3: Quá trình giành độc lập của các quốc gia ở Đông Nam Á</h3>
+                        <svg id="arrow-ch3" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch3" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Quá trình xâm lược và cai trị của chủ nghĩa thực dân ở Đông Nam Á', 'Nội dung chi tiết của bài 5 sẽ được cập nhật sau.')">Bài 5: Quá trình xâm lược và cai trị của chủ nghĩa thực dân ở Đông Nam Á</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Hành trình đi đến độc lập dân tộc ở Đông Nam Á', 'Nội dung chi tiết của bài 6 sẽ được cập nhật sau.')">Bài 6: Hành trình đi đến độc lập dân tộc ở Đông Nam Á</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chương 4 -->
+                <div class="card chapter-card-ch4">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch4')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch4">Chương 4: Chiến tranh bảo vệ Tổ quốc và chiến tranh giải phóng dân tộc trong lịch sử Việt Nam (trước Cách mạng tháng Tám năm 1945)</h3>
+                        <svg id="arrow-ch4" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch4" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam (trước năm 1945)', 'Nội dung chi tiết của bài 7 sẽ được cập nhật sau.')">Bài 7: Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam (trước năm 1945)</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Một số cuộc khởi nghĩa và chiến tranh giải phóng trong lịch sử Việt Nam (từ thế kỉ I TCN đến cuối thế kỉ XIX)', 'Nội dung chi tiết của bài 8 sẽ được cập nhật sau.')">Bài 8: Một số cuộc khởi nghĩa và chiến tranh giải phóng trong lịch sử Việt Nam (từ thế kỉ I TCN đến cuối thế kỉ XIX)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chương 5 -->
+                <div class="card chapter-card-ch5">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch5')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch5">Chương 5: Một số cuộc cải cách lớn trong lịch sử Việt Nam (trước năm 1858)</h3>
+                        <svg id="arrow-ch5" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch5" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Cuộc cải cách của Hồ Quý Ly và Triều Hồ', 'Nội dung chi tiết của bài 9 sẽ được cập nhật sau.')">Bài 9: Cuộc cải cách của Hồ Quý Ly và Triều Hồ</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Cuộc cải cách của Lê Thánh Tông (thế kỉ XV)', 'Nội dung chi tiết của bài 10 sẽ được cập nhật sau.')">Bài 10: Cuộc cải cách của Lê Thánh Tông (thế kỉ XV)</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Cuộc cải cách của Minh Mạng (nửa đầu thế kỉ XIX)', 'Nội dung chi tiết của bài 11 sẽ được cập nhật sau.')">Bài 11: Cuộc cải cách của Minh Mạng (nửa đầu thế kỉ XIX)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chương 6 -->
+                <div class="card chapter-card-ch6">
+                    <div class="flex items-center justify-between cursor-pointer" onclick="toggleLesson('lesson-ch6')">
+                        <h3 class="text-2xl font-semibold chapter-title-ch6">Chương 6: Lịch sử bảo vệ chủ quyền, các quyền và lợi ích hợp pháp của Việt Nam ở Biển Đông</h3>
+                        <svg id="arrow-ch6" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-500 transform rotate-0 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </div>
+                    <div id="lesson-ch6" class="hidden mt-4 text-gray-700 space-y-4">
+                        <ul class="list-none space-y-2 ml-4">
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Vị trí và tầm quan trọng của Biển Đông', 'Nội dung chi tiết của bài 12 sẽ được cập nhật sau.')">Bài 12: Vị trí và tầm quan trọng của Biển Đông</li>
+                            <li class="cursor-pointer hover:bg-gray-100 p-2 rounded-md transition" onclick="showLessonContent('Việt Nam và Biển Đông', 'Nội dung chi tiết của bài 13 sẽ được cập nhật sau.')">Bài 13: Việt Nam và Biển Đông</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phần hiển thị nội dung của từng bài học -->
+            <div id="lesson-content-display" class="card hidden">
+                <h3 id="lesson-title" class="text-2xl font-bold text-blue-700 mb-4"></h3>
+                <div id="lesson-text" class="text-gray-700"></div>
+                <button onclick="hideLessonContent()" class="mt-6 bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-full hover:bg-gray-400 transition">Quay lại</button>
+            </div>
+
+        </div>
+
+        <!-- Infographic Tóm tắt -->
+        <div id="infographic" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Bảng Tóm tắt thông qua Infographic</h2>
+            <div class="card">
+                <div class="mb-4 space-y-4">
+                    <label for="infographic-select" class="block text-lg font-semibold mb-2">Chọn Bài học:</label>
+                    <select id="infographic-select" onchange="showInfographic()" class="w-full md:w-1/2 p-2 border rounded-md">
+                        <option value="">-- Chọn bài học --</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                    
+                    <!-- New dropdown for Bài 2 -->
+                    <select id="infographic-part-select" onchange="showInfographicPart()" class="w-full md:w-1/2 p-2 border rounded-md hidden">
+                        <option value="">-- Chọn phần --</option>
+                    </select>
+                </div>
+                <div id="infographic-display" class="hidden">
+                    <iframe id="infographic-iframe" class="w-full rounded-lg shadow-lg" style="height: 600px; border: none;"></iframe>
+                    <div class="mt-4 text-center">
+                        <a id="infographic-link" href="#" target="_blank" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">
+                            Mở trong tab mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Học liệu số -->
+        <div id="digital-resources" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Học liệu số</h2>
+            <div class="card">
+                <div class="mb-4">
+                    <label for="digital-resources-select" class="block text-lg font-semibold mb-2">Chọn Bài học:</label>
+                    <select id="digital-resources-select" onchange="loadDigitalResource()" class="w-full md:w-1/2 p-2 border rounded-md">
+                        <option value="">-- Chọn bài học --</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                <div id="digital-resource-display" class="hidden p-4 bg-gray-50 rounded-lg">
+                    <h3 id="digital-resource-title" class="text-xl font-bold text-gray-800 mb-2"></h3>
+                    <p id="digital-resource-content" class="text-gray-700"></p>
+                    <a id="digital-resource-link" href="#" target="_blank" class="text-blue-600 hover:underline mt-2 inline-block">Mở học liệu</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Bài tập Trắc nghiệm -->
+        <div id="quiz" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Bài tập Trắc nghiệm</h2>
+            <div class="card">
+                <div class="mb-4">
+                    <label for="quiz-select" class="block text-lg font-semibold mb-2">Chọn Bài học:</label>
+                    <select id="quiz-select" onchange="loadQuiz()" class="w-full md:w-1/2 p-2 border rounded-md">
+                        <option value="">-- Chọn bài học --</option>
+                        <!-- Questions will be injected here -->
+                    </select>
+                </div>
+                <div id="quiz-container" class="hidden space-y-6">
+                    <form id="quiz-form">
+                        <!-- Questions will be injected here -->
+                    </form>
+                    <button id="submit-quiz-btn" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">Nộp bài</button>
+                    <div id="quiz-results" class="mt-4 hidden p-4 bg-gray-100 rounded-lg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trò chơi Mô phỏng -->
+        <div id="game" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Trò chơi Lịch sử theo bài học</h2>
+            <div class="card">
+                <div class="mb-4">
+                    <label for="game-select" class="block text-lg font-semibold mb-2">Chọn Bài học:</label>
+                    <select id="game-select" onchange="loadGame()" class="w-full md:w-1/2 p-2 border rounded-md">
+                        <option value="">-- Chọn bài học --</option>
+                        <!-- Options will be populated by JavaScript -->
+                    </select>
+                </div>
+                <div id="game-content-display" class="hidden text-center">
+                    <h3 id="game-title" class="text-2xl font-bold text-blue-700 mb-4"></h3>
+                    <a id="game-link" href="#" target="_blank" class="block w-full">
+                        <img id="game-image" src="" alt="Hình minh hoạ trò chơi" class="w-2/3 md:w-1/2 mx-auto rounded-lg shadow-lg">
+                    </a>
+                    <p class="text-gray-700 mt-4">Bấm vào hình ảnh để bắt đầu trò chơi!</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trang phụ Thuật ngữ -->
+        <div id="glossary" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Thuật ngữ Lịch sử</h2>
+            <div class="card">
+                <div class="mb-4">
+                    <input type="text" id="glossary-search" placeholder="Tìm kiếm thuật ngữ..." class="w-full p-2 border rounded-md focus:outline-none focus:border-blue-500">
+                </div>
+                <div id="glossary-results" class="space-y-4">
+                    <!-- Glossary items will be dynamically loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Các sự kiện nổi bật -->
+        <div id="events" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Sự kiện Nổi bật</h2>
+            <div class="card">
+                <form id="event-search-form" class="mb-4 flex">
+                    <input type="text" id="event-search-input" placeholder="Tìm kiếm sự kiện hoặc năm..." class="flex-grow p-2 border rounded-md focus:outline-none focus:border-blue-500">
+                    <button type="submit" class="ml-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition">Tìm kiếm</button>
+                </form>
+                <div id="event-results" class="space-y-4">
+                    <!-- Event results will be displayed here -->
+                    <p class="text-center text-gray-500">Hãy tìm kiếm một sự kiện hoặc một năm để bắt đầu.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trang phụ Thông báo của GV -->
+        <div id="announcements" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Thông báo từ Giáo viên</h2>
+            <div class="card">
+                <p class="text-lg text-gray-700 mb-4">Cập nhật những thông báo quan trọng theo tuần.</p>
+                <div class="mb-4">
+                    <label for="announcement-select" class="block text-lg font-semibold mb-2">Chọn Tuần:</label>
+                    <select id="announcement-select" onchange="showAnnouncementByWeek()" class="w-full md:w-1/2 p-2 border rounded-md">
+                        <option value="">-- Chọn tuần --</option>
+                    </select>
+                </div>
+                <div id="announcement-content" class="space-y-6">
+                    <!-- Announcements will be injected here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Hỏi đáp với Chatbot AI -->
+        <div id="chatbot" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Hỏi đáp với Chatbot AI</h2>
+            <div class="card">
+                <div class="chatbot-container">
+                    <div id="chatbot-messages" class="chatbot-messages flex flex-col space-y-2">
+                        <!-- Chatbot messages will be injected here -->
+                        <div class="message-box bot-message">Chào bạn, tôi là một trợ lý ảo về Lịch sử 11. Hãy hỏi tôi bất cứ điều gì nhé!</div>
+                    </div>
+                    <div class="chatbot-input">
+                        <form id="chatbot-form" class="flex">
+                            <input type="text" id="chatbot-input-field" class="flex-grow rounded-full p-3 border border-gray-300 focus:outline-none focus:border-blue-500" placeholder="Nhập câu hỏi của bạn...">
+                            <button type="submit" class="ml-2 bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700 transition">Gửi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liên hệ Giáo viên -->
+        <div id="contact" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Liên hệ Giáo viên</h2>
+            <div class="card">
+                <p class="text-lg text-gray-700 mb-4">Mọi thắc mắc, góp ý hoặc cần hỗ trợ, bạn có thể liên hệ với giáo viên qua các thông tin dưới đây:</p>
+                <ul class="space-y-4 text-gray-800">
+                    <li>
+                        <span class="font-semibold">Email:</span> <a href="mailto:vubaonguyen9612@gmail.com" class="text-blue-600 hover:underline">vubaonguyen9612@gmail.com</a>, <a href="mailto:20831020619@hcmussh.edu.vn" class="text-blue-600 hover:underline">20831020619@hcmussh.edu.vn</a>
+                    </li>
+                    <li>
+                        <span class="font-semibold">Số điện thoại:</span> 0935186740 (Zalo)
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Đăng nhập/Đăng ký -->
+        <div id="auth" class="section-content">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Đăng nhập / Đăng ký</h2>
+            <div class="card auth-container">
+                <form id="auth-form" class="space-y-4">
+                    <input type="email" id="auth-email" class="form-input" placeholder="Email" required>
+                    <input type="password" id="auth-password" class="form-input" placeholder="Mật khẩu" required>
+                    <div class="flex justify-between">
+                        <button type="button" onclick="handleAuth('login')" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">Đăng nhập</button>
+                        <button type="button" onclick="handleAuth('signup')" class="bg-green-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-green-700 transition">Đăng ký</button>
+                    </div>
+                    <p id="auth-message" class="text-center mt-4"></p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-6 mt-8">
+        <p>&copy; 2025 Khám phá Lịch sử 11. Được thiết kế cho học sinh lớp 11.</p>
+    </footer>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+        // Data for dynamic content
+        const lessons = [
+            { id: 'b1', name: 'Bài 1: Một số vấn đề chung về cách mạng tư sản' },
+            { id: 'b2', name: 'Bài 2: Sự xác lập và phát triển của chủ nghĩa tư bản' },
+            { id: 'b3', name: 'Bài 3: Liên bang Cộng hoà xã hội chủ nghĩa Xô viết ra đời và sự phát triển của chủ nghĩa xã hội sau Chiến tranh thế giới thứ hai' },
+            { id: 'b4', name: 'Bài 4: Chủ nghĩa xã hội từ năm 1991 đến nay' },
+            { id: 'b5', name: 'Bài 5: Quá trình xâm lược và cai trị của chủ nghĩa thực dân ở Đông Nam Á' },
+            { id: 'b6', name: 'Bài 6: Hành trình đi đến độc lập dân tộc ở Đông Nam Á' },
+            { id: 'b7', name: 'Bài 7: Chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam (trước năm 1945)' },
+            { id: 'b8', name: 'Bài 8: Một số cuộc khởi nghĩa và chiến tranh giải phóng trong lịch sử Việt Nam (từ thế kỉ I TCN đến cuối thế kỉ XIX)' },
+            { id: 'b9', name: 'Bài 9: Cuộc cải cách của Hồ Quý Ly và Triều Hồ' },
+            { id: 'b10', name: 'Bài 10: Cuộc cải cách của Lê Thánh Tông (thế kỉ XV)' },
+            { id: 'b11', name: 'Bài 11: Cuộc cải cách của Minh Mạng (nửa đầu thế kỉ XIX)' },
+            { id: 'b12', name: 'Bài 12: Vị trí và tầm quan trọng của Biển Đông' },
+            { id: 'b13', name: 'Bài 13: Việt Nam và Biển Đông' }
+        ];
+        
+        // Dữ liệu cho trang thuật ngữ
+        const glossaryData = [
+            { term: 'AEC (ASEAN Economic Community)', definition: 'Cộng đồng Kinh tế ASEAN.' },
+            { term: 'APSC (ASEAN Political - Security Community)', definition: 'Cộng đồng An ninh - Chính trị ASEAN.' },
+            { term: 'ASCC (ASEAN Socio Cultural Community)', definition: 'Cộng đồng Văn hoá - Xã hội ASEAN.' },
+            { term: 'Cách mạng tư sản', definition: 'Cách mạng do giai cấp tư sản (hay quý tộc mới) lãnh đạo nhằm xoá bỏ chế độ chuyên chế, thiết lập nền thống trị của giai cấp tư sản, mở đường cho sự phát triển của chủ nghĩa tư bản.' },
+            { term: 'Cải tổ', definition: 'Những thay đổi cơ bản và toàn diện về tổ chức, thể chế, cơ chế,... trong mọi lĩnh vực nhằm khắc phục những sai lầm trong quá khứ để đưa đất nước tiến lên.' },
+            { term: 'Chiến tranh giải phóng', definition: 'Chiến tranh chính nghĩa, nhằm giành lại độc lập, thoát khỏi sự chiếm đóng, cai trị của ngoại bang.' },
+            { term: 'Chủ nghĩa đế quốc', definition: 'Giai đoạn tiếp sau giai đoạn tự do cạnh tranh của chủ nghĩa tư bản. Đặc trưng chủ yếu là sự tập trung sản xuất và tư bản, sự thống trị của các công ty độc quyền chi phối toàn bộ đời sống kinh tế, chính trị của một nước; sự phân chia thuộc địa giữa các đế quốc.' },
+            { term: 'Chủ nghĩa tư bản', definition: 'Hệ thống chính trị, kinh tế, xã hội được thiết lập sau chế độ phong kiến, dựa trên sở hữu tư nhân, hoạt động sản xuất vì lợi nhuận.' },
+            { term: 'Chủ nghĩa thực dân', definition: 'Quá trình một quốc gia (tư bản) nắm quyền kiểm soát chính trị hoàn toàn hoặc một phần đối với một quốc gia, vùng lãnh thổ; khai thác, bóc lột thuộc địa, áp đặt ngôn ngữ và văn hoá lên người dân các quốc gia thuộc địa.' },
+            { term: 'Cửu khanh', definition: 'Đứng đầu một cơ quan chủ yếu trong bộ máy nhà nước phương Đông cổ đại; chín vị quan đứng đầu các cơ quan chủ yếu trong triều.' },
+            { term: 'Chế độ đình nghị', definition: 'Thể thức tham gia bàn việc nước (việc quốc gia quan yếu, tuyển chọn quan chức theo yêu cầu công vụ, duyệt lại các bản án quan trọng) trước khi trình lên vua quyết định áp dụng từ thời vua Minh Mạng. Đối tượng tham gia là các quan từ chánh tứ phẩm trở lên.' },
+            { term: 'Đảng Cộng sản', definition: 'Chính đảng của giai cấp công nhân, lấy chủ nghĩa Mác - Lê-nin làm nền tảng tư tưởng và kim chỉ nam cho hành động, lấy nguyên tắc tập trung dân chủ làm nguyên tắc tổ chức cơ bản của mình.' },
+            { term: 'Địa chiến lược', definition: 'Sự cân nhắc chiến lược, là nghệ thuật kiểm soát và khai thác nhân tố địa lí (thường là của một quốc gia) kết hợp với môi trường, bối cảnh chính trị, kinh tế quốc tế trong hoạch định và thực thi chiến lược phát triển quốc gia, sao cho những lợi ích của một quốc gia được đảm bảo để tăng thế và lực của mình trên trường quốc tế.' },
+            { term: 'Đổi mới', definition: 'Một đường lối mới về giải pháp thay đổi nhằm thực hiện hiệu quả những mục tiêu phát triển đã được triển khai.' },
+            { term: 'Đường lối', definition: 'Những chuẩn tắc cơ bản về phương hướng, nhiệm vụ, phương châm, lực lượng, phương thức tổ chức thực tiễn về chính trị, quân sự, kinh tế, văn hoá xã hội,... do một nhà nước, một chính đảng, một tổ chức chính trị – xã hội đề ra nhằm thực hiện một mục tiêu nhất định trong một thời kì nhất định.' },
+            { term: 'Giáo phái', definition: 'Một bộ phận của một tôn giáo khi có sự phân hoá, như đạo Tin lành là một trong ba giáo phái của Cơ đốc giáo do Can-vanh cải cách và đề xướng ở Tây Âu thế kỉ XVI. Trong thời kì Cách mạng Anh thế kỉ XVII, có giáo phái trưởng lão theo tư tưởng Can-vanh trong đạo Tin lành, chống chuyên chế phong kiến và Anh giáo. Chiếm đa số trong quốc hội, nhưng sau đó thoả hiệp với phái Bảo hoàng. Bị giải tán năm 1688, hiện tín đồ còn ở Anh, Ô-xtrây-li-a, Ca-na-đa, Mỹ.' },
+            { term: 'Hiệp định', definition: 'Văn bản ngoại giao kí kết giữa hai nước hoặc nhiều nước xác định những vấn đề cụ thể đã thoả thuận, thống nhất thực thi. Hiệp định quan trọng dưới Hiệp ước.' },
+            { term: 'Hiệp ước', definition: 'Văn bản pháp lí quan trọng do Chính phủ hai nước hoặc nhiều nước kí kết nhằm thực hiện những điều đã thoả thuận trong quan hệ giữa các nước và phải được Quốc hội phê chuẩn.' },
+            { term: 'Hoàng thân', definition: 'Những người có quan hệ họ hàng dòng tộc với nhà vua cùng trong hoàng tộc.' },
+            { term: 'Kháng chiến', definition: 'Chiến đấu chống xâm lược, bảo vệ Tổ quốc.' },
+            { term: 'Khoan thư sức dân', definition: 'Khi đất nước ở trong thời bình, triều đình phải lo cho dân, vì nhân dân, vì lợi ích lâu dài cho nhân dân và dân tộc.' },
+            { term: 'Khởi nghĩa', definition: 'Hình thức đấu tranh cao nhất của đông đảo nhân dân bị áp bức bóc lột, nổi lên lật đổ ách đô hộ của ngoại bang (hoặc giai cấp thống trị trong nước). Khởi nghĩa nổ ra khi mâu thuẫn cực kì sâu sắc, có sự chuẩn bị về tổ chức, lãnh đạo.' },
+            { term: 'Lũng đoạn (độc quyền)', definition: 'Sự tập trung vào tay mình mọi đặc quyền để từ đó khống chế và kiểm soát hoạt động sản xuất hoặc kinh doanh.' },
+            { term: 'Lưu quan', definition: 'Chức vụ do người Kinh nắm giữ để quản lí vùng các dân tộc thiểu số và tiến hành thu thuế như ở miền xuôi.' },
+            { term: 'Mã Lai', definition: 'Tên gọi khác của Ma-lai-xi-a.' },
+            { term: 'Miến Điện', definition: 'Tên gọi khác của Mi-an-ma.' },
+            { term: 'Nhà nước pháp quyền', definition: 'Nhà nước được tổ chức và hoạt động trong khuôn khổ pháp luật, phản ánh công lí, phù hợp với quyền tự nhiên của con người.' },
+            { term: 'Quan hệ sản xuất', definition: 'Quan hệ giữa người và người trong quá trình sản xuất ra của cải vật chất, thể hiện ở quan hệ với tư liệu sản xuất, của cải làm ra.' },
+            { term: 'Sắc lệnh', definition: 'Văn bản quy phạm pháp luật hoặc văn bản pháp luật của người đứng đầu bộ máy nhà nước hay bộ máy hành pháp.' },
+            { term: 'Tiền đề', definition: 'Điều kiện cần thiết phải có trước để làm việc gì đó.' },
+            { term: 'Tiên phát chế nhân', definition: 'Hành động tiến công trước để chế áp địch giành quyền chủ động trên chiến trường, phá vỡ thế chủ động, tiêu hao lực lượng và sức mạnh của đối phương.' },
+            { term: 'Tuyên ngôn', definition: 'Bản tuyên bố có tính chất cương lĩnh bày tỏ chủ kiến của một chính đảng, một tổ chức.' },
+            { term: 'Thanh dã', definition: 'Chính sách “vườn không nhà trống" trong thời kì chiến tranh, thường được các nước nhỏ sử dụng để chống lại đạo quân xâm lược hùng mạnh.' },
+            { term: 'Thuộc địa', definition: 'Vùng đất hoặc quốc gia bị các nước khác (thực dân, đế quốc) xâm lược và thống trị, bị áp bức, bóc lột, mất hoàn toàn quyền độc lập về chính trị, kinh tế.' },
+            { term: 'Xiêm', definition: 'Quốc hiệu chính thức của Thái Lan từ năm 1782 đến năm 1939.' },
+        ];
+
+
+        const infographicsData = {
+            'b1': 'https://vu20831020619.github.io/Bai-1-mot-so-van-de-chung-ve-cach-mang-tu-san/',
+            'b2': {
+                'Phần 1': 'https://vu20831020619.github.io/su-xac-lap-va-phat-trien-cua-chu-nghia-tu-ban/',
+                'Phần 2': 'https://vu20831020619.github.io/chunghiatubanhiendai-tiet3/'
+            },
+            'b3': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+3+sẽ+được+cập+nhật+sau',
+            'b4': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+4+sẽ+được+cập+nhật+sau',
+            'b5': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+5+sẽ+được+cập+nhật+sau',
+            'b6': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+6+sẽ+được+cập+nhật+sau',
+            'b7': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+7+sẽ+được+cập+nhật+sau',
+            'b8': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+8+sẽ+được+cập+nhật+sau',
+            'b9': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+9+sẽ+được+cập+nhật+sau',
+            'b10': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+10+sẽ+được+cập+nhật+sau',
+            'b11': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+11+sẽ+được+cập+nhật+sau',
+            'b12': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+12+sẽ+được+cập+nhật+sau',
+            'b13': 'https://placehold.co/800x600/bde0fe/000000?text=Infographic+Bài+13+sẽ+được+cập+nhật+sau',
+        };
+        
+        const digitalResourcesData = {
+            'b1': { title: 'Tài liệu bổ trợ', content: 'Video và tài liệu đọc thêm về cách mạng tư sản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Tài+liệu+số+Bài+1' },
+            'b2': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+2' },
+            'b3': { title: 'Tài liệu bổ trợ', content: 'Video và tài liệu đọc thêm về cách mạng tư sản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Tài+liệu+số+Bài+3' },
+            'b4': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+4' },
+            'b5': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+5' },
+            'b6': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+6' },
+            'b7': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+7' },
+            'b8': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+8' },
+            'b9': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+9' },
+            'b10': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+10' },
+            'b11': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+11' },
+            'b12': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+12' },
+            'b13': { title: 'Bài giảng trực tuyến', content: 'Bài giảng chi tiết về sự phát triển của chủ nghĩa tư bản.', url: 'https://placehold.co/600x400/bde0fe/000000?text=Học+liệu+số+Bài+13' },
+        };
+
+        const quizzesData = {
+            'b1': { url: 'https://azota.vn/de-thi/shrqpx' },
+            'b2': { url: 'https://azota.vn/de-thi/uvijwf' },
+            'b3': { url: 'https://azota.vn/de-thi/nconfj' },
+            'b4': { url: 'https://azota.vn/de-thi/t1ea1c' },
+            'b5': { url: 'https://azota.vn/de-thi/fqwkqt' },
+            'b6': { url: 'https://azota.vn/de-thi/ksaxq9' },
+            'b7': { url: 'https://azota.vn/de-thi/kpfv0h' },
+            'b8': { url: 'https://azota.vn/de-thi/bol9uc' },
+            'b9': { url: 'https://azota.vn/de-thi/hf8t1k' },
+            'b10': { url: 'https://azota.vn/de-thi/ikodvv' },
+            'b11': { url: 'https://azota.vn/de-thi/qg5dgo' },
+            'b12': { url: 'https://azota.vn/de-thi/vzyuna' },
+            'b13': { url: 'https://azota.vn/de-thi/ryad5g' }
+        };
+
+        const gamesData = {
+            'b1': null,
+            'b2': { name: 'Hành trình Lịch sử Tư bản', url: 'https://gemini.google.com/share/7189bae9e40c' },
+            'b3': null,
+            'b4': null,
+            'b5': null,
+            'b6': null,
+            'b7': null,
+            'b8': null,
+            'b9': null,
+            'b10': null,
+            'b11': null,
+            'b12': null,
+            'b13': null,
+        };
+
+        const eventData = [
+            { date: '2/1917', title: 'Cách mạng tháng Hai ở Nga', description: 'Lật đổ chế độ phong kiến Nga hoàng. Nước Nga tồn tại hai chính quyền song song.', year: 1917, month: 2, color: '#6366f1' },
+            { date: '10/1917', title: 'Cách mạng tháng Mười Nga', description: 'Lật đổ chế độ tư bản, thành lập chính quyền Xô viết.', year: 1917, month: 10, color: '#f97316' },
+            { date: '1914 - 1918', title: 'Chiến tranh thế giới thứ nhất', description: 'Cuộc chiến tranh lớn nhất lịch sử nhân loại tính đến thời điểm đó.', year: 1914, color: '#10b981' },
+            { date: '14/7/1789', title: 'Cách mạng tư sản Pháp', description: 'Người dân Pa-ri tấn công ngục Ba-xti, mở đầu cuộc cách mạng lật đổ chế độ phong kiến.', year: 1789, month: 7, color: '#ef4444' },
+        ];
+        
+        // Data for weekly announcements
+        const announcementsData = {
+            'w1': {
+                date: '01/09 - 07/09',
+                content: [
+                    'Bài giảng về Chương 1 đã được đăng tải. Các em hãy xem và chuẩn bị cho tiết học tiếp theo.',
+                    'Đã có bài tập trắc nghiệm mới cho Bài 1 và Bài 2. Hạn chót nộp bài là ngày 07/09.',
+                    'Sắp xếp thành lập các nhóm thảo luận cho dự án cuối kỳ.'
+                ]
+            },
+            'w2': {
+                date: '08/09 - 14/09',
+                content: [
+                    'Buổi học online về Chương 2 sẽ diễn ra vào lúc 20:00 ngày 10/09.',
+                    'Thông báo về cuộc thi "Tìm hiểu Lịch sử" của trường sẽ được đăng tải vào cuối tuần.'
+                ]
+            },
+            'w3': {
+                date: '15/09 - 21/09',
+                content: [
+                    'Bắt đầu ôn tập cho bài kiểm tra giữa kỳ. Nội dung ôn tập bao gồm Chương 1 và Chương 2.',
+                    'Các nhóm dự án hãy gửi đề cương chi tiết cho giáo viên trước ngày 18/09.'
+                ]
+            },
+            'w4': {
+                date: '22/09 - 28/09',
+                content: [
+                    'Kiểm tra giữa kỳ môn Lịch sử 11 sẽ diễn ra vào ngày 25/09.',
+                    'Các em hãy ôn tập kỹ lưỡng và hoàn thành bài thi một cách tốt nhất.'
+                ]
+            }
+        };
+
+        // --- Core Functions ---
+
+        // Populate dropdowns with lesson data
+        function populateDropdowns() {
+            const infographicSelect = document.getElementById('infographic-select');
+            const digitalResourcesSelect = document.getElementById('digital-resources-select');
+            const quizSelect = document.getElementById('quiz-select');
+            const gameSelect = document.getElementById('game-select');
+            const announcementSelect = document.getElementById('announcement-select');
+
+            lessons.forEach(lesson => {
+                const option = document.createElement('option');
+                option.value = lesson.id;
+                option.textContent = lesson.name;
+                infographicSelect.appendChild(option.cloneNode(true));
+                digitalResourcesSelect.appendChild(option.cloneNode(true));
+                quizSelect.appendChild(option.cloneNode(true));
+                gameSelect.appendChild(option.cloneNode(true));
+            });
+            
+            // Populate announcement dropdown
+            for (let i = 1; i <= Object.keys(announcementsData).length; i++) {
+                const weekId = `w${i}`;
+                const option = document.createElement('option');
+                option.value = weekId;
+                option.textContent = `Tuần ${i}: ${announcementsData[weekId].date}`;
+                announcementSelect.appendChild(option);
+            }
+        }
+        
+        // Function to toggle sections
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section-content');
+            sections.forEach(section => {
+                section.classList.remove('active-section');
+            });
+            const navButtons = document.querySelectorAll('.nav-button');
+            navButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active-section');
+            document.querySelector(`[onclick="showSection('${sectionId}')"]`).classList.add('active');
+
+            // When leaving the "knowledge" section, hide the detailed lesson content
+            if (sectionId !== 'knowledge') {
+                document.getElementById('lesson-list-display').classList.remove('hidden');
+                document.getElementById('lesson-content-display').classList.add('hidden');
+            }
+        }
+
+        // Function to toggle lesson content
+        function toggleLesson(lessonId) {
+            const lesson = document.getElementById(lessonId);
+            const arrow = document.getElementById(`arrow${lessonId.slice(-3)}`); 
+            if (lesson.classList.contains('hidden')) {
+                lesson.classList.remove('hidden');
+                lesson.style.display = 'block';
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                lesson.style.display = 'none';
+                lesson.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Function to show detailed lesson content
+        function showLessonContent(title, content) {
+            document.getElementById('lesson-list-display').classList.add('hidden');
+            const contentDisplay = document.getElementById('lesson-content-display');
+            document.getElementById('lesson-title').textContent = title;
+            document.getElementById('lesson-text').textContent = content;
+            contentDisplay.classList.remove('hidden');
+        }
+
+        // Function to go back to the lesson list
+        function hideLessonContent() {
+            document.getElementById('lesson-list-display').classList.remove('hidden');
+            document.getElementById('lesson-content-display').classList.add('hidden');
+        }
+
+        // --- Infographic Logic ---
+        function showInfographic() {
+            const select = document.getElementById('infographic-select');
+            const infographicPartSelect = document.getElementById('infographic-part-select');
+            const display = document.getElementById('infographic-display');
+            const lessonId = select.value;
+
+            // Clear previous content
+            infographicPartSelect.innerHTML = '<option value="">-- Chọn phần --</option>';
+            infographicPartSelect.classList.add('hidden');
+            display.classList.add('hidden');
+
+            if (lessonId && infographicsData[lessonId]) {
+                if (lessonId === 'b2') {
+                    // Populate and show part select for Bài 2
+                    infographicPartSelect.innerHTML = '<option value="">-- Chọn phần --</option>'; // Reset the options
+                    infographicPartSelect.classList.remove('hidden');
+
+                    const part1Option = document.createElement('option');
+                    part1Option.value = infographicsData[lessonId]['Phần 1'];
+                    part1Option.textContent = 'Phần 1: Hành trình của chủ nghĩa tư bản';
+                    infographicPartSelect.appendChild(part1Option);
+
+                    const part2Option = document.createElement('option');
+                    part2Option.value = infographicsData[lessonId]['Phần 2'];
+                    part2Option.textContent = 'Phần 2: Chủ nghĩa tư bản hiện đại';
+                    infographicPartSelect.appendChild(part2Option);
+
+                    display.innerHTML = '<p class="text-center text-gray-500">Vui lòng chọn một phần để xem infographic.</p>';
+                    display.classList.remove('hidden');
+
+                } else if (lessonId === 'b1') {
+                    // Special case for Bài 1
+                    const url = infographicsData[lessonId];
+                     display.innerHTML = `
+                        <iframe src="${url}" class="w-full rounded-lg shadow-lg" style="height: 600px; border: none;"></iframe>
+                        <div class="mt-4 text-center">
+                            <a href="${url}" target="_blank" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">
+                                Mở trong tab mới
+                            </a>
+                        </div>
+                    `;
+                    display.classList.remove('hidden');
+                } else {
+                    // Show single infographic for other lessons
+                    const url = infographicsData[lessonId];
+                    display.innerHTML = `
+                        <iframe src="${url}" class="w-full rounded-lg shadow-lg" style="height: 600px; border: none;"></iframe>
+                        <div class="mt-4 text-center">
+                            <a href="${url}" target="_blank" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">
+                                Mở trong tab mới
+                            </a>
+                        </div>
+                    `;
+                    display.classList.remove('hidden');
+                }
+            } else {
+                display.innerHTML = '<p class="text-center text-gray-500">Chưa có infographic cho bài học này.</p>';
+                display.classList.remove('hidden');
+            }
+        }
+        
+        // Function to show the selected part of the infographic for Bài 2
+        function showInfographicPart() {
+            const partSelect = document.getElementById('infographic-part-select');
+            const display = document.getElementById('infographic-display');
+            const url = partSelect.value;
+            
+            if (url) {
+                display.innerHTML = `
+                    <iframe src="${url}" class="w-full h-96 rounded-lg shadow-lg" style="height: 600px; border: none;"></iframe>
+                    <div class="mt-4 text-center">
+                        <a href="${url}" target="_blank" class="bg-blue-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-blue-700 transition">
+                            Mở trong tab mới
+                        </a>
+                    </div>
+                `;
+                display.classList.remove('hidden');
+            } else {
+                display.innerHTML = '<p class="text-center text-gray-500">Vui lòng chọn một phần để xem infographic.</p>';
+                display.classList.remove('hidden');
+            }
+        }
+
+        // --- Digital Resources Logic ---
+        function loadDigitalResource() {
+            const select = document.getElementById('digital-resources-select');
+            const display = document.getElementById('digital-resource-display');
+            const titleEl = document.getElementById('digital-resource-title');
+            const contentEl = document.getElementById('digital-resource-content');
+            const linkEl = document.getElementById('digital-resource-link');
+            const lessonId = select.value;
+
+            if (lessonId && digitalResourcesData[lessonId]) {
+                const resource = digitalResourcesData[lessonId];
+                titleEl.textContent = resource.title;
+                contentEl.textContent = resource.content;
+                linkEl.href = resource.url;
+                display.classList.remove('hidden');
+            } else {
+                display.classList.add('hidden');
+            }
+        }
+        
+        // --- Quiz Logic ---
+        function loadQuiz() {
+            const select = document.getElementById('quiz-select');
+            const quizContainer = document.getElementById('quiz-container');
+            const quizForm = document.getElementById('quiz-form');
+            const lessonId = select.value;
+            const lessonNumber = parseInt(lessonId.substring(1));
+            const colors = ['#6366f1', '#10b981', '#f97316', '#ef4444', '#8b5cf6', '#d946ef', '#3b82f6', '#14b8a6', '#f59e0b', '#dc2626', '#a855f7', '#ec4899', '#22c55e'];
+            const randomColor = colors[lessonNumber - 1];
+
+            quizForm.innerHTML = ''; // Clear previous content
+            quizContainer.classList.add('hidden'); // Hide container by default
+
+            if (lessonId && quizzesData[lessonId]) {
+                const quizData = quizzesData[lessonId];
+                
+                const quizImageLinkDiv = document.createElement('div');
+                quizImageLinkDiv.className = 'text-center p-4 bg-gray-50 rounded-lg';
+                quizImageLinkDiv.innerHTML = `
+                    <p class="text-lg font-semibold mb-6 text-gray-700">Bấm vào biểu tượng dưới đây để bắt đầu bài trắc nghiệm:</p>
+                    <a href="${quizData.url}" target="_blank" class="inline-block">
+                        <div class="quiz-icon-container" style="background-color: ${randomColor}; box-shadow: 0 4px 15px ${randomColor}60;">
+                             <div class="quiz-number-circle">${lessonNumber}</div>
+                             <!-- SVG for a checkmark or quiz icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 quiz-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M10 12H7m3 4h3m-6-4h.01" />
+                            </svg>
+                        </div>
+                    </a>
+                `;
+                quizForm.appendChild(quizImageLinkDiv);
+                quizContainer.classList.remove('hidden');
+
+            } else {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = 'text-center p-4 text-gray-500';
+                messageDiv.textContent = 'Chưa có bài trắc nghiệm cho bài học này. Vui lòng quay lại sau!';
+                quizForm.appendChild(messageDiv);
+                quizContainer.classList.remove('hidden');
+            }
+        }
+        
+        // --- Game Logic ---
+        function loadGame() {
+            const select = document.getElementById('game-select');
+            const display = document.getElementById('game-content-display');
+            const iframe = document.getElementById('game-iframe');
+            const titleEl = document.getElementById('game-title');
+            const gameImage = document.getElementById('game-image');
+            const link = document.getElementById('game-link');
+            const lessonId = select.value;
+
+            if (lessonId) {
+                const game = gamesData[lessonId];
+                if (game && game.url) {
+                    titleEl.textContent = game.name;
+                    link.href = game.url;
+                    gameImage.src = `https://placehold.co/800x600/bde0fe/000000?text=${encodeURIComponent(game.name)}`;
+                    display.classList.remove('hidden');
+                } else {
+                    titleEl.textContent = "Chưa có trò chơi cho bài này. Vui lòng quay lại sau!";
+                    link.href = "#";
+                    gameImage.src = `https://placehold.co/800x600/bde0fe/000000?text=${encodeURIComponent(titleEl.textContent)}`;
+                    display.classList.remove('hidden');
+                }
+            } else {
+                display.classList.add('hidden');
+            }
+        }
+        
+        // --- Announcements Logic ---
+        function showAnnouncementByWeek() {
+            const select = document.getElementById('announcement-select');
+            const contentDiv = document.getElementById('announcement-content');
+            const weekId = select.value;
+
+            contentDiv.innerHTML = ''; // Clear previous content
+
+            if (weekId && announcementsData[weekId]) {
+                const announcement = announcementsData[weekId];
+                const weekDiv = document.createElement('div');
+                weekDiv.innerHTML = `<h3 class="text-xl font-bold text-blue-700 mb-2">Tuần ${weekId.substring(1)}: ${announcement.date}</h3>`;
+                
+                const ul = document.createElement('ul');
+                ul.className = 'list-disc list-inside space-y-1 text-gray-700';
+
+                announcement.content.forEach(dayContent => {
+                    const li = document.createElement('li');
+                    li.textContent = dayContent;
+                    ul.appendChild(li);
+                });
+                weekDiv.appendChild(ul);
+                contentDiv.appendChild(weekDiv);
+            }
+        }
+        
+        // --- Glossary Logic ---
+        function getRandomColor() {
+            const colors = ['#6366f1', '#10b981', '#f97316', '#ef4444', '#8b5cf6', '#d946ef'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function filterGlossary() {
+            const searchInput = document.getElementById('glossary-search').value.toLowerCase();
+            const resultsDiv = document.getElementById('glossary-results');
+            resultsDiv.innerHTML = ''; // Clear previous results
+
+            const filteredTerms = glossaryData.filter(item =>
+                item.term.toLowerCase().includes(searchInput) ||
+                item.definition.toLowerCase().includes(searchInput)
+            );
+
+            if (filteredTerms.length > 0) {
+                filteredTerms.forEach(item => {
+                    const termDiv = document.createElement('div');
+                    termDiv.className = 'glossary-item';
+                    const randomColor = getRandomColor();
+                    termDiv.innerHTML = `
+                        <div class="glossary-term-circle" style="background-color: ${randomColor};">
+                            ${item.term}
+                        </div>
+                        <div class="glossary-definition-box">
+                            ${item.definition}
+                        </div>
+                    `;
+                    resultsDiv.appendChild(termDiv);
+                });
+            } else {
+                resultsDiv.innerHTML = `<p class="text-center text-gray-500">Không tìm thấy thuật ngữ nào phù hợp.</p>`;
+            }
+        }
+
+        document.getElementById('glossary-search').addEventListener('input', filterGlossary);
+
+        // --- Chatbot Logic ---
+        document.getElementById('chatbot-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const inputField = document.getElementById('chatbot-input-field');
+            const userPrompt = inputField.value.trim();
+            if (userPrompt === '') return;
+
+            const messagesContainer = document.getElementById('chatbot-messages');
+
+            // Add user message
+            const userMessageDiv = document.createElement('div');
+            userMessageDiv.className = 'message-box user-message';
+            userMessageDiv.textContent = userPrompt;
+            messagesContainer.appendChild(userMessageDiv);
+            
+            // Add loading indicator
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message-box bot-message';
+            loadingDiv.innerHTML = 'Đang trả lời...';
+            messagesContainer.appendChild(loadingDiv);
+
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            inputField.value = '';
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: userPrompt }] });
+                const payload = { contents: chatHistory };
+                const apiKey = "" 
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                messagesContainer.removeChild(loadingDiv); // Remove loading indicator
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    const botMessageDiv = document.createElement('div');
+                    botMessageDiv.className = 'message-box bot-message';
+                    botMessageDiv.textContent = text;
+                    messagesContainer.appendChild(botMessageDiv);
+                } else {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'message-box bot-message text-red-600';
+                    errorDiv.textContent = 'Xin lỗi, tôi không thể trả lời câu hỏi này lúc này. Vui lòng thử lại sau.';
+                    messagesContainer.appendChild(errorDiv);
+                }
+            } catch (error) {
+                console.error('Lỗi khi gọi API:', error);
+                loadingDiv.innerHTML = 'Đã xảy ra lỗi khi kết nối. Vui lòng thử lại.';
+                loadingDiv.className = 'message-box bot-message text-red-600';
+            } finally {
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        });
+
+        // Auth logic (mock)
+        function handleAuth(type) {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const messageEl = document.getElementById('auth-message');
+
+            if (!email || !password) {
+                messageEl.textContent = 'Vui lòng nhập đầy đủ email và mật khẩu.';
+                messageEl.className = 'text-center mt-4 text-red-600';
+                return;
+            }
+
+            if (type === 'login') {
+                messageEl.textContent = `Đăng nhập thành công với email: ${email}`;
+                messageEl.className = 'text-center mt-4 text-green-600';
+            } else if (type === 'signup') {
+                messageEl.textContent = `Đăng ký thành công cho email: ${email}`;
+                messageEl.className = 'text-center mt-4 text-green-600';
+            }
+        }
+        
+        // --- Event Search Logic ---
+        const eventsList = [
+            { date: '2/1917', title: 'Cách mạng tháng Hai ở Nga', description: 'Lật đổ chế độ phong kiến Nga hoàng. Nước Nga tồn tại hai chính quyền song song.', year: 1917, month: 2, color: '#6366f1' },
+            { date: '10/1917', title: 'Cách mạng tháng Mười Nga', description: 'Lật đổ chế độ tư bản, thành lập chính quyền Xô viết.', year: 1917, month: 10, color: '#f97316' },
+            { date: '1914 - 1918', title: 'Chiến tranh thế giới thứ nhất', description: 'Cuộc chiến tranh lớn nhất lịch sử nhân loại tính đến thời điểm đó.', year: 1914, color: '#10b981' },
+            { date: '14/7/1789', title: 'Cách mạng tư sản Pháp', description: 'Người dân Pa-ri tấn công ngục Ba-xti, mở đầu cuộc cách mạng lật đổ chế độ phong kiến.', year: 1789, month: 7, color: '#ef4444' },
+        ];
+
+        document.getElementById('event-search-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const query = document.getElementById('event-search-input').value.toLowerCase();
+            const resultsContainer = document.getElementById('event-results');
+            resultsContainer.innerHTML = '';
+            
+            const filteredEvents = eventsList.filter(event =>
+                event.date.toLowerCase().includes(query) ||
+                event.title.toLowerCase().includes(query) ||
+                event.description.toLowerCase().includes(query) ||
+                (event.year && event.year.toString().includes(query))
+            );
+
+            if (filteredEvents.length > 0) {
+                filteredEvents.forEach(event => {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = 'event-item';
+                    eventItem.innerHTML = `
+                        <div class="event-year-circle" style="background-color: ${event.color};">
+                            ${event.date}
+                        </div>
+                        <div class="event-content">
+                            <p class="event-title">${event.title}</p>
+                            <p class="event-description">${event.description}</p>
+                        </div>
+                    `;
+                    resultsContainer.appendChild(eventItem);
+                });
+            } else {
+                resultsContainer.innerHTML = `<p class="text-center text-gray-500">Không tìm thấy sự kiện nào.</p>`;
+            }
+        });
+
+        // Initial setup
+        window.onload = () => {
+            populateDropdowns();
+            // Load all glossary terms on page load
+            filterGlossary();
+        };
+    </script>
+</body>
+</html>
